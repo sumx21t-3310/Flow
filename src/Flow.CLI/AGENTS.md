@@ -8,18 +8,18 @@ Dependencies: `Microsoft.Agents.AI` and `Microsoft.Agents.AI.OpenAI` (Microsoft 
 dotnet run --project src/Flow.CLI
 ```
 
-## 作業スコープ
+## Scope
 
 - Owns: command-line argument handling, console display, wiring of the agent runtime.
 - During Phase 1 this project also hosts the `Flow.Core.*` namespaces (judges, stages, plan file) because no `Flow.Core` csproj exists yet. Keep them in a `Core/` directory so that Phase 2 can move them by file relocation. Namespace and physical directory must match.
 - Does not own: writing-stage logic, judge logic, plan-file schema. Those live under `Flow.Core.*` even while they sit in this csproj.
 
-## レビュー観点
+## Review Points
 
-- Did any `Flow.Core.*` type gain a dependency on `Flow.CLI.*`, `System.Console`, or argument parsing? That is the boundary Phase 2 relies on. (Temporary: moves to 受け入れ条件 once the reference test exists in Phase 1b.)
+- Did any `Flow.Core.*` type gain a dependency on `Flow.CLI.*`, `System.Console`, or argument parsing? That is the boundary Phase 2 relies on. (Temporary: moves to Acceptance Conditions once the reference test exists in Phase 1b.)
 - Did the pass/fail decision of a loop come from a judge, or from the LLM evaluating its own output? Only the judge decides.
 
-## 受け入れ条件
+## Acceptance Conditions
 
 Contracts that must stay true after every change. Each becomes a test once the test project exists (Phase 1b); until then, review enforces them.
 

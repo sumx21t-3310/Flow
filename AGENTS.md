@@ -18,7 +18,7 @@ Flow aims to be a writing agent: it runs the whole pipeline from planning to pro
 
 Current projects:
 
-- `src/Flow.CLI` — console app (see `src/Flow.CLI/AGENTS.md`)
+- `src/Flow.CLI`: console app (see `src/Flow.CLI/AGENTS.md`)
 
 ## Commands
 
@@ -32,12 +32,12 @@ There is no test project yet. When one is added, register it in `Flow.slnx` unde
 
 ## Conventions
 
-- Agent instructions are layered like a Pandekten code: **総則** (this file, rules common to the whole repository) → **各則** (one `AGENTS.md` per `.csproj` directory, plus a `CLAUDE.md` stub containing only `@AGENTS.md`) → **特則** (an `AGENTS.md` below a csproj, exceptional). The rules that apply to a file are the sum of all layers above it. Claude Code loads a subdirectory `CLAUDE.md` lazily when it touches files there, so project-specific detail belongs in the project's `AGENTS.md`, not here.
+- Agent instructions are layered like a Pandekten code: **general provisions** (this file, rules common to the whole repository) -> **project provisions** (one `AGENTS.md` per `.csproj` directory, plus a `CLAUDE.md` stub containing only `@AGENTS.md`) -> **special provisions** (an `AGENTS.md` below a csproj, exceptional). The rules that apply to a file are the sum of all layers above it. Claude Code loads a subdirectory `CLAUDE.md` lazily when it touches files there, so project-specific detail belongs in the project's `AGENTS.md`, not here.
 - A lower layer writes only its difference from the layers above: it specializes or adds constraints and never repeats them. If a lower rule contradicts an upper rule, the lower rule applies within its directory and the contradiction is a docs bug: report it and fix one side in the same change.
-- Add a 特則 below a csproj only when that directory has an invariant of its own that the project `AGENTS.md` cannot express without leaking into sibling directories, and the need exists now rather than as a possibility. Never place one just because a directory exists.
-- Each project `AGENTS.md` has three fixed sections: **作業スコープ** (what the project owns and does not own), **レビュー観点** (what to suspect when reviewing changes there), **受け入れ条件** (contracts that must stay true after every change; each is meant to become a test that fails when the contract breaks). Per-task completion criteria belong to the GitHub Issue, not here.
-- レビュー観点 and 受け入れ条件 are two views of one list, split by whether the contract is automated yet. When a review point becomes a test, move it to 受け入れ条件 and delete it from レビュー観点. What stays in レビュー観点 permanently is what needs human judgment (scope, over-abstraction). A growing レビュー観点 list is a sign that testable contracts are not being tested.
-- **A C# namespace and its physical directory must match**, and must be changed together (`src/Flow.CLI/Core/Judges/X.cs` → `namespace Flow.Core.Judges;`). Do not create a mismatch by moving only one side.
+- Add special provisions below a csproj only when that directory has an invariant of its own that the project `AGENTS.md` cannot express without leaking into sibling directories, and the need exists now rather than as a possibility. Never place one just because a directory exists.
+- Each project `AGENTS.md` has three fixed sections: **Scope** (what the project owns and does not own), **Review Points** (what to suspect when reviewing changes there), **Acceptance Conditions** (contracts that must stay true after every change; each is meant to become a test that fails when the contract breaks). Per-task completion criteria belong to the GitHub Issue, not here.
+- Review Points and Acceptance Conditions are two views of one list, split by whether the contract is automated yet. When a review point becomes a test, move it to Acceptance Conditions and delete it from Review Points. What stays in Review Points permanently is what needs human judgment (scope, over-abstraction). A growing Review Points list is a sign that testable contracts are not being tested.
+- **A C# namespace and its physical directory must match**, and must be changed together (`src/Flow.CLI/Core/Judges/X.cs` -> `namespace Flow.Core.Judges;`). Do not create a mismatch by moving only one side.
 - Adding a project: place it under `src/`, add a `<Project Path="src/<Name>/<Name>.csproj" />` entry inside the `/src/` folder in `Flow.slnx`, and create the `AGENTS.md` / `CLAUDE.md` pair (copy the stub from `src/Flow.CLI/CLAUDE.md`).
 - `bin/` and `obj/` are gitignored. `.idea/` (Rider) is untracked and should stay out of commits.
 
@@ -48,5 +48,5 @@ There is no test project yet. When one is added, register it in `Flow.slnx` unde
 - PR body contains `Closes #<issue>`. **Do not mix unrelated refactoring, renames, cleanup, or dependency changes into a PR**; report them and let the owner decide (issue / `// TODO:` / nothing).
 - Docs-only changes (`AGENTS.md`, `docs/`) may skip the issue and go straight to a branch and PR.
 - CI (`.github/workflows/ci.yml`) builds on every PR and push to main. Add `dotnet test` steps when a test project exists. Do not report "CI passed" while a run is queued or in progress.
-- Test naming, once tests exist: `MemberName_条件_期待結果` (member name in English, condition and expectation in Japanese; class names mirror the type under test). Every bug fix ships with a regression test.
-- Open questions listed under "未決定" in `docs/design.md` become issues when they are picked up, one issue per question.
+- Test naming, once tests exist: `MemberName_<condition>_<expected>` (member name in English, condition and expected result written in Japanese; class names mirror the type under test). Every bug fix ships with a regression test.
+- Open questions listed under the open-questions section of `docs/design.md` become issues when they are picked up, one issue per question.
