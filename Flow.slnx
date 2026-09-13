@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Flow.CLI/Flow.CLI.csproj" />
+  </Folder>
+</Solution>
